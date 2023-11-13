@@ -1,5 +1,7 @@
 package net.proselyte.springbootdemo.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import net.proselyte.springbootdemo.model.Stud;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,8 @@ import java.util.List;
 @Controller
 public class StudController {
     private final StudService studService;
+
+    public static int idd;
     @Autowired
     public StudController(StudService studService) {
         this.studService = studService;
@@ -31,8 +35,10 @@ public class StudController {
         return "stud-create";
     }
     @PostMapping("/stud-create")
-    public String createStud(Stud stud){
+    public String createStud(Stud stud, HttpServletResponse response){
         studService.saveStud(stud);
+        idd = Math.toIntExact(stud.getId());
+        response.addCookie(new Cookie("id", Integer.toString(idd)));
         return "redirect:/studs";
     }
     @GetMapping("/stud-delete/{id}")
